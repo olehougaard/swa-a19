@@ -152,13 +152,13 @@ function named(obj, name) {
     function setName(newName) {
         name = newName
     }
-    Object.assign(obj, { getName, setName })
+    return Object.assign(obj, { getName, setName })
 }
 
 
 
 function salaried(obj, salary) {
-    Object.assign(obj, { salary })
+    return Object.assign(obj, { salary })
 }
 
 function create_employee(name, salary) {
