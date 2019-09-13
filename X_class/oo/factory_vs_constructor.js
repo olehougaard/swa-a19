@@ -74,9 +74,19 @@ Person2.prototype.setName = function(name) {
     this.name = name
 }
 
+function Employee2(name, salary) {
+    Person2.call(this, name)
+    this.salary = salary
+}
+
+Object.setPrototypeOf(Employee2.prototype, Person2.prototype)
+Employee2.prototype.getSalary = function() { return this.salary }
+
 let person21 = new Person2("George")
 person21.setName("Joe")
-console.log(person21.getName())
+console.log(person21)
+
+let e = new Employee2("Joe", 897)
 
 // class keyword
 class Person3 {
@@ -95,4 +105,63 @@ class Person3 {
 
 let person31 = new Person3("George")
 person31.setName("Joe")
-console.log(person31.getName())
+console.log(person31)
+
+class Employee3 extends Person3 {
+    constructor(name, salary) {
+        super(name)
+        this.salary = salary
+    }
+
+    getSalary() {
+        return salary
+    }
+}
+
+const person_ = { name: 'Ollie' }
+const employee = Object.create(person_)
+employee.salary = 9123876;
+console.log(employee.name)
+person_.name = 'John'
+console.log(employee.name)
+console.log(person_.name)
+
+employee.name = 'Joe'
+console.log(employee.name)
+console.log(person_.name)
+
+
+console.log(Person3)
+console.log(Person3.prototype)
+console.log(Person3.prototype.getName)
+
+console.log(Employee3.prototype.__proto__ === Person3.prototype)
+
+// Concatinative inheritance / Mixins / Composition
+function getNames(people) {
+    let names = []
+    for(let person of people)
+        names.push(person.getName())
+    return names
+}
+
+function named(obj, name) {
+    function getName() {
+        return name
+    }
+    function setName(newName) {
+        name = newName
+    }
+    Object.assign(obj, { getName, setName })
+}
+
+
+
+function salaried(obj, salary) {
+    Object.assign(obj, { salary })
+}
+
+function create_employee(name, salary) {
+    const p = named({})
+    return salaried(p, salary)
+}
