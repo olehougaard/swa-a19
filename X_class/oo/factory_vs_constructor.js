@@ -162,6 +162,6 @@ function salaried(obj, salary) {
 }
 
 function create_employee(name, salary) {
-    const p = named({})
+    const p = named({}, name)
     return salaried(p, salary)
 }
