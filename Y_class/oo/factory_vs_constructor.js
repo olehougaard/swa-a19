@@ -178,3 +178,23 @@ function create_employee(firstName, lastName, salary) {
     return salaried(create_person(firstName, lastName), salary)
 }
 
+// Alternative implementation
+// Concatenative inheritance / mixins
+function create_person({firstName, lastName}) {
+    function getFirstName() { return firstName }
+    function getLastName() { return lastName }
+    function getFullName() { return firstName + ' ' + lastName }
+    return { getFirstName, getLastName, getFullName }
+}
+
+function salaried(obj) {
+    function toString() { return obj.firstName + ' ' + obj.lastName + ': ' + salary }
+    function getSalary() { return obj.salary }
+    return { getSalary, toString }
+}
+
+function create_employee(firstName, lastName, salary) {
+    let obj = {firstName, lastName, salary}
+    return Object.assign({}, create_person(obj), salaried(obj))
+}
+
