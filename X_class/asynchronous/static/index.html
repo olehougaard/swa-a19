@@ -1,0 +1,64 @@
+<html>
+<head> 
+    <title>People</title>
+    <style>
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+        }
+        table {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id='base'>
+        <h1>People</h1>
+        <table id='employees'>
+            <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
+            <tbody id='employee_data'></tbody>
+        </table>
+    </div>
+</body>
+<script type = 'module'>
+    const server = 'http://localhost:9090/'
+    let theStore
+    function fetchJson(relativeUrl, options) {
+        options = options || {}
+        options.headers = options.headers || { 'Content-Type': 'application/json', Accept: 'application/json' }
+        const fullUrl = new URL(relativeUrl, server)
+        return fetch(fullUrl.href, options).then(res => res.json())
+    }
+    function dispatch(action) {
+        theStore.onAction(action)
+    }
+    const actionProvider = {
+        async onHire(personId) {
+            const salary = prompt('Salary for new hire')
+            if (salary) {
+                const headers = { 'Content-Type': 'application/json', Accept: 'application/json' }
+                const employee = await fetchJson('/employees', { method: 'POST', body: JSON.stringify({ salary, manager: false}) })
+                const person = await fetchJson('/persons/' + personId, { method: 'PATCH', body: JSON.stringify({ employeeId: employee.employeeId }) })
+                dispatch({ type: 'hire', person, employee})
+            }
+        }
+    }
+
+    import model from './model.js'
+    import presenter from './presenter.js'
+    import view from './view.js'
+    
+    function init() {
+        let persons
+        let employees
+        const theModel = model(persons, employees)
+        const theView = view(window)
+        const thePresenter = presenter(theModel, theView)
+        theView.listen(thePresenter.onAction)
+        theView.update(theModel)
+    }
+    init()
+</script>
+</html>
