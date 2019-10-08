@@ -24,26 +24,35 @@
 </body>
 <script type = 'module'>
     import model from './model.js'
-    import presenter from './presenter.js'
+    import presenter from './presenter_fetch.js'
     import view from './view.js'
     
     function init() {
-        const request = new XMLHttpRequest()
-        request.open('GET', 'http://localhost:9090/persons')
-        request.onload = () => {
-            const persons = JSON.parse(request.responseText)
-            request.open('GET', 'http://localhost:9090/employees')
-            request.onload= () => {
-                const employees = JSON.parse(request.responseText)
+        fetch('http://localhost:9090/persons')
+        .then(res => res.json())
+        .then(persons => {
+            fetch('http://localhost:9090/employees')
+            .then(res => res.json())
+            .then(employees => {
                 const theModel = model(persons, employees)
                 const theView = view(window)
                 const thePresenter = presenter(theModel, theView)
                 theView.listen(thePresenter.onAction)
                 theView.update(theModel)
-            }
-            request.send()
-        }
-        request.send()
+            })
+        })
+        .catch(err => console.error(err))
+
+        // Alternate:
+        Promise.all([fetch('http://localhost:9090/persons').then(res => res.json()), 
+                     fetch('http://localhost:9090/employees').then(res => res.json())])
+        .then(([persons, employees]) => {
+            const theModel = model(persons, employees)
+            const theView = view(window)
+            const thePresenter = presenter(theModel, theView)
+            theView.listen(thePresenter.onAction)
+            theView.update(theModel)
+        })
     }
     init()
 </script>
