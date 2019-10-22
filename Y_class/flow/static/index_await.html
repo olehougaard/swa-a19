@@ -12,8 +12,28 @@
             border-spacing: 0;
         }
     </style>
+    <script type = 'module'>
+        import model from './model.js'
+        import presenter from './presenter.js'
+        import view from './view.js'
+        
+        async function init() {
+            try {
+                const person_res = await fetch('http://localhost:9090/persons')
+                const persons = await person_res.json()
+                const employees = await fetch('http://localhost:9090/employees').then(res => res.json())
+                const theModel = model(persons, employees)
+                const theView = view(window)
+                const thePresenter = presenter(theModel, theView)
+                theView.listen(thePresenter.onAction)
+                theView.update(theModel)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    </script>
 </head>
-<body>
+<body onload="init()">
     <div id='base'>
         <h1>People</h1>
         <table id='employees'>
@@ -22,25 +42,4 @@
         </table>
     </div>
 </body>
-<script type = 'module'>
-    import model from './model.js'
-    import presenter from './presenter.js'
-    import view from './view.js'
-    
-    async function init() {
-        try {
-            const person_res = await fetch('http://localhost:9090/persons')
-            const persons = await person_res.json()
-            const employees = await fetch('http://localhost:9090/employees').then(res => res.json())
-            const theModel = model(persons, employees)
-            const theView = view(window)
-            const thePresenter = presenter(theModel, theView)
-            theView.listen(thePresenter.onAction)
-            theView.update(theModel)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-    init()
-</script>
 </html>
