@@ -14,8 +14,9 @@
     </style>
     <script type = 'module'>
         import model from './model.js'
-        import presenter from './presenter.js'
+        import store from './store.js'
         import view from './view.js'
+        import dispatcher from './dispatcher.js'
         
         window.init = async function init() {
             try {
@@ -23,10 +24,11 @@
                 const persons = await person_res.json()
                 const employees = await fetch('http://localhost:9090/employees').then(res => res.json())
                 const theModel = model(persons, employees)
-                const theView = view(window)
-                const thePresenter = presenter(theModel, theView)
-                theView.listen(thePresenter.onAction)
-                theView.update(theModel)
+                let theDispatcher
+                const { view: theView, renderer } = view(window, () => theDispatcher)
+                const theStore = store(theModel, theView, renderer)
+                theDispatcher = dispatcher(theStore)
+                renderer(theView(theModel))
             } catch (err) {
                 console.log(err)
             }

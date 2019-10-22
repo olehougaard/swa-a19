@@ -1,4 +1,4 @@
-export default window => {
+export default (window, dispatcher) => {
     const document = window.document
     const table_body = document.getElementById('employee_data')
     const listeners = []
@@ -6,7 +6,7 @@ export default window => {
     const listen = l => listeners.push(l)
 
     const addPerson = p => {
-        const tr = table_body.appendChild(document.createElement('tr'))
+        const tr = document.createElement('tr')
         tr.insertCell().appendChild(document.createTextNode(p.id))
         tr.insertCell().appendChild(document.createTextNode(p.name))
         if (p.employeeId) {
@@ -18,19 +18,23 @@ export default window => {
             button.appendChild(document.createTextNode("Hire"))
             button.onclick = () => {
                 const event = { type: 'hire', id: p.id }
-                listeners.forEach(l => l(event))
+                const theDispatcher = dispatcher()
+                theDispatcher(event)
             }
 
             tr.insertCell()
             tr.insertCell()
         }
+        return tr
     }
 
-    const update = model => {
+    const view = model => model.personData().map(addPerson)
+
+    const renderer = rows => {
         while(table_body.firstChild) table_body.removeChild(table_body.firstChild)
-        model.personData().forEach(addPerson)
+        rows.forEach(r => table_body.appendChild(r))
     }
     const prompt = window.prompt.bind(window)
 
-    return { addPerson, update, listen, prompt }
+    return { view, renderer }
 }

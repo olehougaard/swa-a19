@@ -1,11 +1,8 @@
-export default (init_model, view) => {
-  let model = init_model
-
-  const onAction = async ({type, ...params}) =>  {
+export default store => async ({type, ...params}) =>  {
     switch(type) {
       case 'hire':
         const { id } = params
-        const salary = view.prompt('Salary?')
+        const salary = window.prompt('Salary?')
         if (salary) {
           const headers = { 'Content-Type': 'application/json', Accept: 'application/json' }
           const employee = await fetch('http://localhost:9090/employees',
@@ -16,12 +13,11 @@ export default (init_model, view) => {
             { method: 'PATCH', 
               body: JSON.stringify({ employeeId: employee.employeeId }), 
               headers}).then(res => res.json())
-          model = model.addEmployee(employee).updatePerson(person)
-          view.update(model)
+          store({type, ...params, employee, person})
         }
         break;
-    }
-  }
 
-  return { onAction }
+      default:
+    }
 }
+
