@@ -1,0 +1,47 @@
+<html>
+<head> 
+    <title>People</title>
+    <style>
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+        }
+        table {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+    </style>
+    <script type = 'module'>
+        import model from './model.js'
+        import store from './store.js'
+        import view from './view.js'
+        import dispatcher from './dispatcher.js'
+        
+        window.init = async function init() {
+            try {
+                const person_res = await fetch('http://localhost:9090/persons')
+                const persons = await person_res.json()
+                const employees = await fetch('http://localhost:9090/employees').then(res => res.json())
+                const theModel = model(persons, employees)
+                let theDispatcher
+                const { view: theView, renderer } = view(window, () => theDispatcher)
+                const theStore = store(theModel, theView, renderer)
+                theDispatcher = dispatcher(theStore)
+                renderer(theView(theModel))
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id='base'>
+        <h1>People</h1>
+        <table id='employees'>
+            <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
+            <tbody id='employee_data'></tbody>
+        </table>
+    </div>
+</body>
+</html>
