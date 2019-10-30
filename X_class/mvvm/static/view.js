@@ -1,12 +1,9 @@
-export default (window, dispatcher) => {
+export default (window, viewmodel) => {
     const document = window.document
     const table_body = document.getElementById('employee_data')
-    const listeners = []
-
-    const listen = l => listeners.push(l)
 
     const addPerson = p => {
-        const tr = document.createElement('tr')
+        const tr = table_body.appendChild(document.createElement('tr'))
         tr.insertCell().appendChild(document.createTextNode(p.id))
         tr.insertCell().appendChild(document.createTextNode(p.name))
         if (p.employeeId) {
@@ -17,24 +14,21 @@ export default (window, dispatcher) => {
             const button = tr.insertCell().appendChild(document.createElement('button'))
             button.appendChild(document.createTextNode("Hire"))
             button.onclick = () => {
-                const event = { type: 'hire', id: p.id }
-                const theDispatcher = dispatcher()
-                theDispatcher(event)
+                const salary = window.prompt('Salary?')
+                if (salary) {
+                    viewmodel.hire(p.id, salary)
+                }
             }
-
             tr.insertCell()
             tr.insertCell()
         }
-        return tr
     }
 
-    const view = model => model.personData().map(addPerson)
-
-    const renderer = rows => {
+    const update = model => {
         while(table_body.firstChild) table_body.removeChild(table_body.firstChild)
-        rows.forEach(r => table_body.appendChild(r))
+        model.personData().forEach(addPerson)
     }
-    const prompt = window.prompt.bind(window)
 
-    return { view, renderer }
+    viewmodel.addListener(() => update(viewmodel))
+    update(viewmodel)
 }
