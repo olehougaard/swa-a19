@@ -1,0 +1,39 @@
+<html ng-app='employeeApp'>
+<head> 
+    <title>People</title>
+    <style>
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+        }
+        table {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+    </style>
+    <script type = 'module'>
+        import 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js'
+        import './components.js'
+    </script>
+</head>
+<body ng-controller="EmployeeController">
+    <div id='base'>
+        <h1>People</h1>
+        <table id='employees'>
+            <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
+            <tbody id='employee_data'>
+                <tr ng-repeat="person in model.persons">
+                    <td>{{person.id}}</td>
+                    <td>{{person.name}}</td>
+                    <td ng-if='person.employeeId'>{{person.employeeId}}</td>
+                    <td ng-if='person.employeeId'>{{person.salary}}</td>
+                    <td ng-if='person.employeeId'>{{person.manager}}</td>
+                    <td colspan='3' ng-if='!person.employeeId'><button ng-click='hire(person.id)'>Hire</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Salary: <model-input property-name='salary'></p>
+    </div>
+</body>
+</html>

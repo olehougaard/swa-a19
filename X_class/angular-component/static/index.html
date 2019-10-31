@@ -1,0 +1,31 @@
+<html ng-app='employeeApp'>
+<head> 
+    <title>People</title>
+    <style>
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+        }
+        table {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+    </style>
+    <script type = 'module'>
+        import 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js'
+        import './components.js'
+    </script>
+</head>
+<body ng-controller="EmployeeController">
+    <div id='base'>
+        <h1>People</h1>
+        <table id='employees'>
+            <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
+            <tbody id='employee_data'>
+                <person-row ng-repeat="person in persons" data="person"></person-row>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
