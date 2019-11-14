@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <script type='module'>
+      // Add creation operators below
+      import { fromEvent } from 'https://dev.jspm.io/rxjs@6/_esm2015';
+      // Add other operators below
+      import { map, filter } from 'https://dev.jspm.io/rxjs@6/_esm2015/operators';
+
+      window.load = () => {
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+        const ul = document.querySelector('ul')
+        const getText = () => input.value
+        const addElement = text => {
+          const li = document.createElement('li')
+          li.innerText = text
+          ul.appendChild(li)
+        }
+        button.onclick = () => {
+          const text = getText()
+          addElement(text)
+        }
+      }
+    </script>
+  </head>
+  <body onload='load()'>
+    <input value=""><button>Add</button>
+    <ul></ul>
+  </body>
+</html>
