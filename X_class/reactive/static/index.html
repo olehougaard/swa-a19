@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <script type="module">
+            import { fromEvent } from 'https://dev.jspm.io/rxjs@6/_esm2015';
+            import { map, filter } from 'https://dev.jspm.io/rxjs@6/_esm2015/operators';
+
+            const log = x => { console.log(x); return x }
+
+            window.load = () => {
+                const input = document.querySelector('input')
+                const button = document.querySelector('button')
+                const ul = document.querySelector('ul')
+
+                const getText = () => input.value
+                const addBullet = text => {
+                    const li = document.createElement('li')
+                    li.innerText = text
+                    ul.appendChild(li)
+                }
+
+                fromEvent(button, 'click')
+                .pipe(map(getText))
+                .pipe(map(log))
+                .pipe(filter(text => text !== ''))
+                //.subscribe(addBullet)
+            }
+        </script>
+    </head>
+    <body onload="load()">
+        <input><button>Add</button>
+        <ul></ul>
+    </body>
+</html>
