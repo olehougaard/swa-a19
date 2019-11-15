@@ -20,9 +20,8 @@
 
                 fromEvent(button, 'click')
                 .pipe(map(getText))
-                .pipe(map(log))
                 .pipe(filter(text => text !== ''))
-                //.subscribe(addBullet)
+                .subscribe(addBullet)
             }
         </script>
     </head>
