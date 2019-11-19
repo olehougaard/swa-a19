@@ -18,10 +18,13 @@
                     ul.appendChild(li)
                 }
 
-                button.onclick = () => {
-                    const text = getText()
-                    addBullet(text)
-                }
+                const log = x => { console.log(x); return x }
+
+                fromEvent(button, 'click')
+                .pipe(map(getText))
+                .pipe(map(log))
+                .pipe(filter(text => text !== ''))
+                .subscribe(addBullet)
             }
         </script>
     </head>
