@@ -8,7 +8,7 @@ export default (init_model) => {
   const notify = () => listeners.forEach(listener => listener())
 
   const getSalary = () => salary
-  const setSalary = _salary => { salary = _salary }
+  const setSalary = _salary => { salary = _salary; notify() }
 
   const hire = async (id) => {
     if (salary > 0) {

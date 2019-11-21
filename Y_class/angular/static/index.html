@@ -23,9 +23,17 @@
         <table id='employees'>
             <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
             <tbody id='employee_data'>
-                <person-row ng-repeat="person in persons" data="person"></person-row>
+                <tr ng-repeat="person in persons">
+                    <td>{{person.id}}</td>
+                    <td>{{person.name}}</td>
+                    <td ng-if='person.employeeId'>{{person.employeeId}}</td>
+                    <td ng-if='person.employeeId'>{{person.salary}}</td>
+                    <td ng-if='person.employeeId'>{{person.manager}}</td>
+                    <td colspan='3' ng-if='!person.employeeId'><button ng-click='hire(person.id)'>Hire</button></td>
+                </tr>
             </tbody>
         </table>
+        <p>Salary: <input ng-model='salary'></p>
     </div>
 </body>
 </html>
