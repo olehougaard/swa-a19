@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <style>
+            #chat {
+                visibility: hidden;
+            }
+        </style>
+        <script>
+            let ws
+            const value = selector => document.querySelector(selector).value
+            const style = selector => document.querySelector(selector).style
+            const showChat = () => {
+                style('#subscribe').visibility = 'hidden';
+                style('#chat').visibility = 'visible';
+            }
+            const addBullet = text => {
+                    const li = document.createElement('li')
+                    li.innerText = text
+                    document.querySelector('#messages').appendChild(li)
+                }
+            window.subscribe = () => {
+                const nick = value('#nick')
+                if (nick) {
+                    ws = new WebSocket("ws://localhost:9090/chat")
+                    ws.onopen = () => {
+                        const message = JSON.stringify({ command: 'subscribe', nick })
+                        ws.send(message)
+                        showChat();
+                    }
+                    ws.onmessage = message => {
+                        addBullet(message.data)
+                    }
+                }
+            }
+            window.sendMessage = () => {
+                const to = value('#to')
+                const msg = value('#msg')
+                const message = JSON.stringify({ command: 'send', to, msg })
+                if (ws) ws.send(message)
+            }
+        </script>
+    </head>
+    <body>
+        <div id='subscribe'>
+            <input id='nick'><button onclick='subscribe()'>Login</button>
+        </div>
+        <div id='chat'>
+            To: <input id='to'><br>
+            Message:<br>
+            <textarea id='msg'></textarea><br>
+            <button onclick=sendMessage()>Send message</button><br>
+            Messages:<br>
+            <ul id = 'messages'></ul>
+            <button onclick=unsubscribe()>Unsubscribe</button>
+        </div>
+    </body>
+</html>
